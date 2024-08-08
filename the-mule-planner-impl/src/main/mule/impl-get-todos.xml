@@ -1,0 +1,50 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <sub-flow name="impl-get-todos">
+    <os:retrieve key="${os.keys.todos}" doc:name="Retrieve" doc:id="rfilzy" objectStore="Object_Store" />
+    <choice doc:name="Choice" doc:id="wnzkdm">
+      <when expression="#[vars.needsFiltering ~= true]" doc:name="needsFiltering">
+        <ee:transform doc:name="Filter results" doc:id="cfyglw">
+          <ee:message>
+            <ee:set-payload doc:name="Set payload" doc:id="rvsupc">
+              <![CDATA[
+%dw 2.0
+output application/json
+import getDate from dw::Utilities
+
+var titleContainsParam = vars.titleContainsParam
+var isCheckedParam = vars.isCheckedParam
+var fromDateParam = vars.fromDateParam
+var toDateParam = vars.toDateParam
+
+fun filterByTitle(data:Array, titleContains:String):Array =
+    data filter (lower($.title) contains lower(titleContains))
+fun filterByChecked(data:Array, isChecked:String|Boolean):Array =
+    data filter ($.checked ~= isChecked)
+fun filterFromDate(data:Array, fromDate:String):Array = 
+    data filter ($.dueDate >= getDate(fromDate))
+fun filterToDate(data:Array, toDate:String):Array =
+    data filter ($.dueDate <= getDate(toDate))
+fun filterByDueDate(data: Array):Array =
+    data filter (!isEmpty($.dueDate))
+---
+(if (!isEmpty(titleContainsParam)) payload filterByTitle titleContainsParam
+else payload)
+then (if (!isEmpty(isCheckedParam)) $ filterByChecked isCheckedParam
+    else $)
+then (if (!isEmpty(fromDateParam)) filterByDueDate($) filterFromDate fromDateParam
+    else $)
+then (if (!isEmpty(toDateParam)) filterByDueDate($) filterToDate toDateParam
+    else $)
+        ]]>
+            </ee:set-payload>
+          </ee:message>
+        </ee:transform>
+      </when>
+      <otherwise>
+        <logger doc:name="Logger" doc:id="znhkks" message="No filters needed" />
+      </otherwise>
+    </choice>
+  </sub-flow>
+</mule>

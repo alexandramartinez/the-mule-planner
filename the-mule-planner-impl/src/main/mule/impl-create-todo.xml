@@ -1,0 +1,35 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <sub-flow name="impl-create-todo">
+    <flow-ref name="common:get-next-id" />
+    <ee:transform doc:name="newToDo var" doc:id="mbnnue">
+      <ee:variables>
+        <ee:set-variable variableName="newToDo">
+          <![CDATA[%dw 2.0
+        output application/json
+        ---
+        { id: vars.nextId } ++ payload update {
+          case c at .checked! -> c default false
+        }
+        ]]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+        <flow-ref  name="impl-get-todos"/>
+    <ee:transform doc:name="Add To-Do" doc:id="lockci">
+      <ee:message>
+        <ee:set-payload doc:name="Set payload" doc:id="lhqbis">
+          <![CDATA[%dw 2.0
+        output application/json
+        import getObject, getArray from dw::Utilities
+        ---
+        ( getArray(payload) default [] ) + ( getObject(vars.newToDo) default {})
+        ]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <os:store key="${os.keys.todos}" doc:name="Store" doc:id="jnynne" objectStore="Object_Store" />
+    <set-payload value="#[vars.newToDo]" doc:name="Set payload" doc:id="qyhlgk" />
+  </sub-flow>
+</mule>

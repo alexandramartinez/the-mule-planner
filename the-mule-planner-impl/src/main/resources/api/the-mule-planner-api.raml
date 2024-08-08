@@ -1,0 +1,104 @@
+#%RAML 1.0
+title: The Mule Planner
+mediaType:
+  - application/json
+version: 1.0.0
+
+types:
+  New-To-Do:
+    type: object
+    description: New To-Do that doesn't have an ID and only needs a title to create it.
+    properties:
+      title:
+        example: Example
+        type: string
+      checked?:
+        default: false
+        example: false
+        type: boolean
+      dueDate?:
+        example: 2024-06-18
+        type: date-only
+  To-Do:
+    type: New-To-Do
+    description: Existing To-Do with an ID and the rest of the properties from the New To-Do.
+    properties:
+      id:
+        example: 1
+        type: number
+        format: int
+
+/todos:
+  get:
+    displayName: Get All To-Dos
+    queryParameters:
+      titleContains?:
+        example: Example
+        type: string
+      isChecked?:
+        example: true
+        type: boolean
+      fromDate?:
+        example: 2024-06-18
+        type: date-only
+      toDate?:
+        example: 2024-06-18
+        type: date-only
+    responses:
+      "200":
+        body:
+          items:
+            type: To-Do
+          example:
+            - 
+              id: 1
+              title: Design an API 
+              checked: true
+            - 
+              id: 2
+              title: Implement an API
+              checked: false
+              dueDate: 2030-01-01
+  post:
+    displayName: Create a To-Do
+    body:
+      type: New-To-Do
+      examples:
+        example1:
+          title: Create an API
+        example2:
+          title: Create an API
+          checked: false
+          dueDate: 2030-01-01
+        example3:
+          title: Create an API
+          dueDate: 2030-01-01
+    responses:
+      "201":
+        body:
+          type: To-Do
+
+/todos/{id}:
+  uriParameters:
+    id:
+      example: 1
+      type: number
+      format: int
+  get:
+    displayName: Get a To-Do
+    responses:
+      "200":
+        body:
+          type: To-Do
+  put:
+    displayName: Update a To-Do
+    body:
+      type: To-Do
+    responses:
+      "200":
+        body:
+          type: To-Do
+  delete:
+    displayName: Delete a To-Do
+    responses:
+      "204": {}

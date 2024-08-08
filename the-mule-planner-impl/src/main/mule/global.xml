@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+  <http:listener-config name="the-mule-planner-api-httpListenerConfig">
+    <http:listener-connection host="${http.listener.host}" port="${http.listener.port}" />
+  </http:listener-config>
+  <apikit:config name="the-mule-planner-api-config" api="the-mule-planner-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+  <configuration-properties file="${env}-props.yaml" doc:name="Configuration properties" />
+  <configuration-properties file="global-props.yaml" doc:name="Configuration properties" />
+  <global-property name="env" value="dev" />
+  <os:object-store name="Object_Store" doc:name="Object store" />
+</mule>

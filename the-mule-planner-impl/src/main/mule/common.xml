@@ -1,0 +1,17 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os="http://www.mulesoft.org/schema/mule/os" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+  <sub-flow name="common:get-next-id">
+    <os:retrieve key="${os.keys.nextId}" doc:name="Retrieve" doc:id="izccjq" target="lastId" objectStore="Object_Store">
+      <os:default-value>
+        <![CDATA[#[output application/json --- 0]]]>
+      </os:default-value>
+    </os:retrieve>
+    <set-variable variableName="nextId" value="#[import getNumber from dw::Utilities ---
+(getNumber(vars.lastId) default 0) + 1]" doc:name="nextId += 1" doc:id="ewtrdj" />
+    <os:store key="${os.keys.nextId}" doc:name="nextId" doc:id="lqowzy" objectStore="Object_Store">
+      <os:value>
+        <![CDATA[#[vars.nextId]]]>
+      </os:value>
+    </os:store>
+  </sub-flow>
+</mule>

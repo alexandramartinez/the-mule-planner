@@ -1,0 +1,4 @@
+os:
+  keys:
+    nextId: nextId
+    todos: todos
