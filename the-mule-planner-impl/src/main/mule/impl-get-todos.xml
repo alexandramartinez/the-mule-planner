@@ -2,14 +2,21 @@
 	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
 	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
   <sub-flow name="impl-get-todos">
-    <os:retrieve key="${os.keys.todos}" doc:name="Retrieve" doc:id="rfilzy" objectStore="Object_Store" />
+    <os:retrieve key="${os.keys.todos}" doc:name="Retrieve" doc:id="rfilzy" objectStore="Object_Store">
+      <os:default-value>
+        <![CDATA[#[%dw 2.0
+output application/json
+---
+[]
+          ]]]>
+      </os:default-value>
+    </os:retrieve>
     <choice doc:name="Choice" doc:id="wnzkdm">
       <when expression="#[vars.needsFiltering ~= true]" doc:name="needsFiltering">
         <ee:transform doc:name="Filter results" doc:id="cfyglw">
           <ee:message>
             <ee:set-payload doc:name="Set payload" doc:id="rvsupc">
-              <![CDATA[
-%dw 2.0
+              <![CDATA[%dw 2.0
 output application/json
 import getDate from dw::Utilities
 
