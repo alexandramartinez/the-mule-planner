@@ -135,20 +135,10 @@ output application/json
         </error-handler>
     </flow>
     <flow name="put:\todos\(id):application\json:the-mule-planner-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="put:\todos\(id):application\json:the-mule-planner-api-config" />
+        <flow-ref name="common:save-uriParam-id" />
     </flow>
     <flow name="delete:\todos\(id):the-mule-planner-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="delete:\todos\(id):the-mule-planner-api-config" />
+        <flow-ref name="common:save-uriParam-id" />
     </flow>
     <flow name="get:\todos:the-mule-planner-api-config">
         <set-variable variableName="titleContainsParam" value="#[attributes.queryParams.titleContains]" doc:name="titleContainsParam" doc:id="zjhczj" />
@@ -156,19 +146,13 @@ output application/json
         <set-variable variableName="fromDateParam" value="#[attributes.queryParams.fromDate]" doc:name="fromDateParam" doc:id="mrtekt" />
         <set-variable variableName="toDateParam" value="#[attributes.queryParams.toDate]" doc:name="toDateParam" doc:id="rsdugh" />
         <set-variable variableName="needsFiltering" value="#[!isEmpty(vars.titleContainsParam) or !isEmpty(vars.isCheckedParam) or !isEmpty(vars.fromDateParam) or !isEmpty(vars.toDateParam)]" doc:name="needsFiltering?" doc:id="ialqrz" />
-        <flow-ref  name="impl-get-todos"/>
-        
+        <flow-ref name="impl-get-todos" />
     </flow>
     <flow name="get:\todos\(id):the-mule-planner-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="get:\todos\(id):the-mule-planner-api-config" />
+        <flow-ref name="common:save-uriParam-id" />
+        <flow-ref name="impl-get-a-todo" />
     </flow>
     <flow name="post:\todos:application\json:the-mule-planner-api-config">
-        <flow-ref  name="impl-create-todo"/>
-        
+        <flow-ref name="impl-create-todo" />
     </flow>
 </mule>

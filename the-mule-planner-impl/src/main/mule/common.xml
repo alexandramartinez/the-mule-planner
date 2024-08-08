@@ -1,17 +1,28 @@
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:os="http://www.mulesoft.org/schema/mule/os" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-	http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd  http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
   <sub-flow name="common:get-next-id">
-    <os:retrieve key="${os.keys.nextId}" doc:name="Retrieve" doc:id="izccjq" target="lastId" objectStore="Object_Store">
+    <os:retrieve doc:id="izccjq" doc:name="Retrieve" key="${os.keys.nextId}" objectStore="Object_Store" target="lastId">
       <os:default-value>
         <![CDATA[#[output application/json --- 0]]]>
       </os:default-value>
     </os:retrieve>
-    <set-variable variableName="nextId" value="#[import getNumber from dw::Utilities ---
-(getNumber(vars.lastId) default 0) + 1]" doc:name="nextId += 1" doc:id="ewtrdj" />
-    <os:store key="${os.keys.nextId}" doc:name="nextId" doc:id="lqowzy" objectStore="Object_Store">
+    <set-variable doc:id="ewtrdj" doc:name="nextId += 1" value="#[import getNumber from dw::Utilities --- (getNumber(vars.lastId) default 0) + 1]" variableName="nextId"></set-variable>
+    <os:store doc:id="lqowzy" doc:name="nextId" key="${os.keys.nextId}" objectStore="Object_Store">
       <os:value>
         <![CDATA[#[vars.nextId]]]>
       </os:value>
     </os:store>
+  </sub-flow>
+  <sub-flow name="common:get-all-todos">
+    <os:retrieve doc:id="rfilzy" doc:name="Retrieve" key="${os.keys.todos}" objectStore="Object_Store">
+      <os:default-value>
+        <![CDATA[#[output application/json --- []]]]>
+      </os:default-value>
+    </os:retrieve>
+  </sub-flow>
+  <sub-flow name="common:store-new-todos">
+    <os:store doc:id="jnynne" doc:name="Store" key="${os.keys.todos}" objectStore="Object_Store"></os:store>
+  </sub-flow>
+  <sub-flow name="common:save-uriParam-id">
+    <set-variable variableName="idParam" value="#[attributes.uriParams.id]" doc:name="idParam" doc:id="fwmoyb" />
   </sub-flow>
 </mule>
