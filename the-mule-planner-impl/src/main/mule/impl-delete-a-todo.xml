@@ -1,0 +1,20 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <flow name="impl-delete-a-todo">
+    <flow-ref name="common:get-all-todos" />
+    <ee:transform doc:name="Delete todo from list" doc:id="jimvrs">
+      <ee:message>
+        <ee:set-payload doc:name="Set payload" doc:id="txhjmk">
+          <![CDATA[
+%dw 2.0
+output application/json
+var idParam = vars.idParam
+---
+payload filter ($.id != idParam)
+        ]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <flow-ref name="common:store-new-todos" />
+  </flow>
+</mule>

@@ -23,6 +23,6 @@
     <os:store doc:id="jnynne" doc:name="Store" key="${os.keys.todos}" objectStore="Object_Store"></os:store>
   </sub-flow>
   <sub-flow name="common:save-uriParam-id">
-    <set-variable variableName="idParam" value="#[attributes.uriParams.id]" doc:name="idParam" doc:id="fwmoyb" />
+    <set-variable variableName="idParam" value="#[import getNumber from dw::Utilities --- getNumber(attributes.uriParams.id)]" doc:name="idParam" doc:id="fwmoyb" />
   </sub-flow>
 </mule>
