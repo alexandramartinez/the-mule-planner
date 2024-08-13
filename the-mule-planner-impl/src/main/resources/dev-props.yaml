@@ -2,3 +2,8 @@ http:
   listener:
     host: "0.0.0.0"
     port: "8081"
+api:
+  id: "12345678"
+
+# add this as a JVM arg locally or a property in CH if you're not using autodiscovery:
+# anypoint.platform.gatekeeper=disabled
