@@ -136,6 +136,8 @@ output application/json
     </flow>
     <flow name="put:\todos\(id):application\json:the-mule-planner-api-config">
         <flow-ref name="common:save-uriParam-id" />
+        <set-variable variableName="newToDo" value="#[payload]" doc:name="newToDo" doc:id="ybnkoc" />
+        <flow-ref name="impl-update-a-todo" />
     </flow>
     <flow name="delete:\todos\(id):the-mule-planner-api-config">
         <flow-ref name="common:save-uriParam-id" />

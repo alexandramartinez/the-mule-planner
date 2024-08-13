@@ -1,0 +1,27 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <sub-flow name="impl-update-a-todo">
+    <flow-ref name="common:get-all-todos" />
+    <ee:transform doc:name="Update all ToDos" doc:id="qvsloh">
+      <ee:message>
+        <ee:set-payload doc:name="Set payload" doc:id="qeughg">
+          <![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+var idParam = vars.idParam
+var newToDo = vars.newToDo
+---
+payload map ((todo) -> 
+    if (todo.id ~= idParam) todo update {
+        case t at .title! -> newToDo.title default "no title? :D"
+        case c at .checked! -> newToDo.checked default false
+        case d at .dueDate! -> newToDo.dueDate
+    } else todo
+)
+        ]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <flow-ref name="common:store-new-todos" />
+    <flow-ref name="impl-get-a-todo" />
+  </sub-flow>
+</mule>
